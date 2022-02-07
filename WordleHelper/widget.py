@@ -43,7 +43,7 @@ def update_letters(event):
         correct_place = []
         for count, i in enumerate(incorrect_letters_box.children):
             if i.value != "":
-                incorrect_place.append(i.value)
+                incorrect_letters.append(i.value)
         for count, i in enumerate(incorrect_place_box.children):
             if i.value != "":
                 incorrect_place.append((count, i.value))
