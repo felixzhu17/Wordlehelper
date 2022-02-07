@@ -28,6 +28,10 @@ button_update = Button(
     style={"description_width": "initial"},
 )
 
+button_clear = Button(
+    description="Clear", tooltip="Clear", style={"description_width": "initial"}
+)
+
 button_reset = Button(
     description="Reset", tooltip="Reset", style={"description_width": "initial"}
 )
@@ -59,8 +63,20 @@ def update_letters(event):
             display(ipyHTML("<h2>Possible Words:</h2>"))
             for i in guess:
                 display(ipyHTML(i))
+                
 
-       
+
+def clear_letters(event):
+    for i in incorrect_letters_box.children:
+        i.value = ""
+
+    for i in incorrect_place_box.children:
+        i.value = ""
+
+    for i in correct_place_box.children:
+        i.value = ""
+
+
 def reset_letters(event):
     with output:
         clear_output()
@@ -69,6 +85,7 @@ def reset_letters(event):
 
 
 button_update.on_click(update_letters)
+button_clear.on_click(clear_letters)
 button_reset.on_click(reset_letters)
 
 WordleWidget = VBox(
@@ -80,7 +97,7 @@ WordleWidget = VBox(
         incorrect_place_box,
         correct_place_label,
         correct_place_box,
-        HBox([button_update, button_reset]),
+        HBox([button_update,button_clear, button_reset]),
         output,
     ]
 )
