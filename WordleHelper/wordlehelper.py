@@ -1,6 +1,8 @@
 import string
 import enchant
 import itertools
+from IPython.display import display
+from IPython.display import HTML as ipyHTML
 
 PERMUTATION_CUTOFF = 200000
 
@@ -35,65 +37,50 @@ class Wordle:
                     base_words_list.append(base_word)
             return [i for i in base_words_list if self.check_base_word(i)]
 
+    def update(self, incorrect_letters=None, incorrect_place=None, correct_place=None):
+        self.update_incorrect_letters(incorrect_letters)
+        self.update_all_incorrect_places(incorrect_place)
+        self.update_all_correct_places(correct_place)
+        return self.guess()
+
+    def reset(self):
+        self.__init__()
+        return
+
     def update_incorrect_letters(self, letters):
         if letters is None:
             return
         for letter in letters:
-            if letter.lower() in self.remaining_letters:
-                self.remaining_letters.remove(letter)
+            if self._check_letter(letter):
+                if letter.lower() in self.remaining_letters:
+                    self.remaining_letters.remove(letter)
+            else:
+                return
         return
 
-    def update_correct_place(self, letters):
+    def update_all_incorrect_places(self, letters):
         if letters is None:
             return
 
         if isinstance(letters, tuple):
-            if isinstance(letters[0], int) and isinstance(letters[1], str):
-                self.word[letters[0]] = letters[1]
-                if letters[1] in self.correct_letters:
-                    self.correct_letters.remove(letters[1])
-                return
-            else:
-                raise ValueError
+            self._update_incorrect_place(letters)
 
-        for letter in letters:
-            if (
-                isinstance(letter, tuple)
-                and isinstance(letter[0], int)
-                and isinstance(letter[1], str)
-            ):
-                self.word[letter[0]] = letter[1]
-                if letter[1] in self.correct_letters:
-                    self.correct_letters.remove(letter[1])
-            else:
-                raise ValueError
-
+        else:
+            for letter in letters:
+                self._update_incorrect_place(letter)
         return
 
-    def update_incorrect_place(self, letters):
+    def update_all_correct_places(self, letters):
         if letters is None:
             return
 
         if isinstance(letters, tuple):
-            if isinstance(letters[0], int) and isinstance(letters[1], str):
-                self.incorrect_place.append(letters)
-                if letters[1] not in self.correct_letters:
-                    self.correct_letters.append(letters[1])
-                return
-            else:
-                raise ValueError
+            self._update_correct_place(letters)
 
-        for letter in letters:
-            if (
-                isinstance(letter, tuple)
-                and isinstance(letter[0], int)
-                and isinstance(letter[1], str)
-            ):
-                self.incorrect_place.append(letter)
-                if letter[1] not in self.correct_letters:
-                    self.correct_letters.append(letter[1])
-            else:
-                raise ValueError
+        else:
+            for letter in letters:
+                self._update_correct_place(letter)
+
         return
 
     def check_base_word(self, base_word):
@@ -112,10 +99,10 @@ class Wordle:
             ]
         )
 
-        print(f"{permutations=}")
+        display(ipyHTML(f"<h4>There are {permutations} permutations</h4>"))
 
         if permutations > PERMUTATION_CUTOFF:
-            print(f"Too many permutations to guess")
+            display(ipyHTML(f"<i>There are too many permutations to compute</i>"))
             return
 
         for base_word in self.base_words:
@@ -130,8 +117,39 @@ class Wordle:
                         output.append(test_word)
         return set(output)
 
-    def update(self, incorrect_letters=None, incorrect_place=None, correct_place=None):
-        self.update_incorrect_letters(incorrect_letters)
-        self.update_incorrect_place(incorrect_place)
-        self.update_correct_place(correct_place)
-        return self.guess()
+    def _check_letter(self, letter):
+        if letter not in list(string.ascii_lowercase):
+            display(ipyHTML(f"<i>{letter} is not a valid letter</i>"))
+            return False
+        return True
+
+    def _update_incorrect_place(self, letter):
+        if (
+            isinstance(letter, tuple)
+            and isinstance(letter[0], int)
+            and isinstance(letter[1], str)
+        ):
+            if self._check_letter(letter[1]):
+                self.incorrect_place.append(letter)
+                if letter[1] not in self.correct_letters:
+                    self.correct_letters.append(letter[1])
+            else:
+                return
+        else:
+            raise ValueError
+
+    def _update_correct_place(self, letter):
+        if (
+            isinstance(letter, tuple)
+            and isinstance(letter[0], int)
+            and isinstance(letter[1], str)
+        ):
+            if self._check_letter(letter[1]):
+                self.word[letter[0]] = letter[1]
+                if letter[1] in self.correct_letters:
+                    self.correct_letters.remove(letter[1])
+                return
+            else:
+                return
+        else:
+            raise ValueError
