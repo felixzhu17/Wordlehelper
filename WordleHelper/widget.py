@@ -8,7 +8,9 @@ wordle = Wordle()
 title_label = HTML("<h1>Wordle Helper</h1>")
 
 incorrect_letter_label = HTML("<h2>Insert Incorrect Letters:</h2>")
-incorrect_letters_box = Text(placeholder="", width="200%")
+incorrect_letters_box = HBox(
+    [Text(description=str(i), placeholder="", width="10%") for i in range(1, 6)]
+)
 
 incorrect_place_label = HTML("<h2>Insert Correct Letters in the Incorrect Place:</h2>")
 incorrect_place_box = HBox(
@@ -36,9 +38,12 @@ output = Output()
 def update_letters(event):
     with output:
         clear_output()
-        incorrect_letters = incorrect_letters_box.value
+        incorrect_letters = []
         incorrect_place = []
         correct_place = []
+        for count, i in enumerate(incorrect_letters_box.children):
+            if i.value != "":
+                incorrect_place.append(i.value)
         for count, i in enumerate(incorrect_place_box.children):
             if i.value != "":
                 incorrect_place.append((count, i.value))
