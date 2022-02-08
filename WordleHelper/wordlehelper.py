@@ -123,7 +123,7 @@ class Wordle:
         display(ipyHTML(f"<h3>There are {permutations} permutations</h3>"))
 
         if permutations > PERMUTATION_CUTOFF:
-            display(ipyHTML(f"<i>There are too many permutations to compute</i>"))
+            display(ipyHTML(f"<i>There are too many permutations to compute (must be below {PERMUTATION_CUTOFF})</i>"))
             return
 
         display(ipyHTML(f"<i>Calculating permutations ...</i>"))
