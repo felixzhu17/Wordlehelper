@@ -7,12 +7,16 @@ wordle = Wordle()
 
 title_label = HTML("<h1>Wordle Helper</h1>")
 
-incorrect_letter_label = HTML("<h2>Insert Incorrect Letters <i>(you can enter multiple letters in the same box)</i>:</h2>")
+incorrect_letter_label = HTML(
+    "<h2>Insert Incorrect Letters <i>(you can enter multiple letters in the same box)</i>:</h2>"
+)
 incorrect_letters_box = HBox(
     [Text(description=str(i), placeholder="", width="10%") for i in range(1, 6)]
 )
 
-incorrect_place_label = HTML("<h2>Insert Correct Letters in the Incorrect Place <i>(you can enter multiple letters in the same box)</i>:</h2>")
+incorrect_place_label = HTML(
+    "<h2>Insert Correct Letters in the Incorrect Place <i>(you can enter multiple letters in the same box)</i>:</h2>"
+)
 incorrect_place_box = HBox(
     [Text(description=str(i), placeholder="", width="10%") for i in range(1, 6)]
 )
