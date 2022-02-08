@@ -1,6 +1,7 @@
 import string
 import itertools
 import os
+from collections import defaultdict
 from IPython.display import display
 from IPython.display import HTML as ipyHTML
 
@@ -37,6 +38,21 @@ class Wordle:
                 if all(item in base_word for item in self.correct_letters):
                     base_words_list.append(base_word)
             return [i for i in base_words_list if self.check_base_word(i)]
+
+    @property
+    def display_incorrect_letters(self):
+        return list(set(list(string.ascii_lowercase)) - set(self.remaining_letters))
+    
+    @property
+    def display_incorrect_place(self):
+        output = {i:[] for i in range(1,6)}
+        for i in self.incorrect_place:
+            output[i[0]+1].append(i[1])
+        return output
+
+    @property
+    def display_correct_letters(self):
+        return [i if i is not None else '_' for i in self.word]
 
     def update(self, incorrect_letters=None, incorrect_place=None, correct_place=None):
         self.update_incorrect_letters(incorrect_letters)

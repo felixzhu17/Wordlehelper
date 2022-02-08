@@ -36,11 +36,11 @@ button_reset = Button(
     description="Reset", tooltip="Reset", style={"description_width": "initial"}
 )
 
-output = Output()
-
+results_output = Output()
+track_output = Output()
 
 def update_letters(event):
-    with output:
+    with results_output:
         clear_output()
         incorrect_letters = []
         incorrect_place = []
@@ -63,7 +63,17 @@ def update_letters(event):
             display(ipyHTML("<h2>Possible Words:</h2>"))
             for i in guess:
                 display(ipyHTML(i))
-                
+        clear_letters(event)
+    
+def update_tracking(event):
+    with track_output:
+        clear_output()
+        display(ipyHTML("<h3>Incorrect Letters:</h3>"))
+        display(ipyHTML(str(wordle.display_incorrect_letters)))
+        display(ipyHTML("<h3>Correct Letters in the Incorrect Place:</h3>"))
+        display(ipyHTML(str(wordle.display_incorrect_place)))
+        display(ipyHTML("<h3>Correct Letters in the Correct Place:</h3>"))
+        display(ipyHTML(str(wordle.display_correct_letters)))
 
 
 def clear_letters(event):
@@ -75,13 +85,15 @@ def clear_letters(event):
 
     for i in correct_place_box.children:
         i.value = ""
-
+        
+    update_tracking(event)
 
 def reset_letters(event):
-    with output:
+    with results_output:
         clear_output()
         wordle.reset()
         display(ipyHTML("<h3>Letters have been reset</h3>"))
+        clear_letters(event)
 
 
 button_update.on_click(update_letters)
@@ -98,6 +110,6 @@ WordleWidget = VBox(
         correct_place_label,
         correct_place_box,
         HBox([button_update,button_clear, button_reset]),
-        output,
+        HBox([results_output, track_output]),
     ]
 )
