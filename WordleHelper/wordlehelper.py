@@ -6,11 +6,14 @@ from IPython.display import display
 from IPython.display import HTML as ipyHTML
 
 
-DICT_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "dictionary.txt"))
+DICT_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "dictionary.txt")
+)
 PERMUTATION_CUTOFF = 200000
 
+
 class Wordle:
-    def __init__(self, dict_path = DICT_PATH):
+    def __init__(self, dict_path=DICT_PATH):
         self.remaining_letters = list(string.ascii_lowercase)
         self.incorrect_place = []
         self.correct_letters = []
@@ -42,17 +45,19 @@ class Wordle:
     @property
     def display_incorrect_letters(self):
         return list(set(list(string.ascii_lowercase)) - set(self.remaining_letters))
-    
+
     @property
     def display_incorrect_place(self):
-        output = {i:[] for i in range(1,6)}
+        output = {i: [] for i in range(1, 6)}
         for i in self.incorrect_place:
-            output[i[0]+1].append(i[1])
+            output[i[0] + 1].append(i[1])
+        for k, v in output.items():
+            output[k] = list(set(v))
         return output
 
     @property
     def display_correct_letters(self):
-        return [i if i is not None else '_' for i in self.word]
+        return [i if i is not None else "_" for i in self.word]
 
     def update(self, incorrect_letters=None, incorrect_place=None, correct_place=None):
         self.update_incorrect_letters(incorrect_letters)
@@ -68,9 +73,10 @@ class Wordle:
         if letters is None:
             return
         for letter in letters:
-            if self._check_letter(letter):
-                if letter.lower() in self.remaining_letters:
-                    self.remaining_letters.remove(letter)
+            for i in letter:
+                if self._check_letter(i):
+                    if i.lower() in self.remaining_letters:
+                        self.remaining_letters.remove(i.lower())
             else:
                 return
         return
@@ -116,12 +122,13 @@ class Wordle:
             ]
         )
 
-        display(ipyHTML(f"<h4>There are {permutations} permutations</h4>"))
+        display(ipyHTML(f"<h3>There are {permutations} permutations</h3>"))
 
         if permutations > PERMUTATION_CUTOFF:
             display(ipyHTML(f"<i>There are too many permutations to compute</i>"))
             return
 
+        display(ipyHTML(f"<i>Calculating permutations ...</i>"))
         for base_word in self.base_words:
             empty_idx = [i for i, x in enumerate(base_word) if x == None]
             for i in itertools.product(self.remaining_letters, repeat=len(empty_idx)):
@@ -135,7 +142,7 @@ class Wordle:
         return set(output)
 
     def _check_letter(self, letter):
-        if letter not in list(string.ascii_lowercase):
+        if letter.lower() not in list(string.ascii_lowercase):
             display(ipyHTML(f"<i>{letter} is not a valid letter</i>"))
             return False
         return True
@@ -146,12 +153,13 @@ class Wordle:
             and isinstance(letter[0], int)
             and isinstance(letter[1], str)
         ):
-            if self._check_letter(letter[1]):
-                self.incorrect_place.append(letter)
-                if letter[1] not in self.correct_letters:
-                    self.correct_letters.append(letter[1])
-            else:
-                return
+            for i in letter[1]:
+                if self._check_letter(i):
+                    self.incorrect_place.append((letter[0], i.lower()))
+                    if i.lower() not in self.correct_letters:
+                        self.correct_letters.append(i.lower())
+                else:
+                    return
         else:
             raise ValueError
 
@@ -162,15 +170,13 @@ class Wordle:
             and isinstance(letter[1], str)
         ):
             if self._check_letter(letter[1]):
-                self.word[letter[0]] = letter[1]
-                if letter[1] in self.correct_letters:
-                    self.correct_letters.remove(letter[1])
-                return
+                self.word[letter[0]] = letter[1].lower()
+                if letter[1].lower() in self.correct_letters:
+                    self.correct_letters.remove(letter[1].lower())
             else:
                 return
         else:
             raise ValueError
-
 
     def _import_dictionary(self, dict_path):
         dictionary = []

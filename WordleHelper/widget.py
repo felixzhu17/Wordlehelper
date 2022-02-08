@@ -39,6 +39,7 @@ button_reset = Button(
 results_output = Output()
 track_output = Output()
 
+
 def update_letters(event):
     with results_output:
         clear_output()
@@ -64,7 +65,8 @@ def update_letters(event):
             for i in guess:
                 display(ipyHTML(i))
         clear_letters(event)
-    
+
+
 def update_tracking(event):
     with track_output:
         clear_output()
@@ -85,8 +87,9 @@ def clear_letters(event):
 
     for i in correct_place_box.children:
         i.value = ""
-        
+
     update_tracking(event)
+
 
 def reset_letters(event):
     with results_output:
@@ -109,7 +112,7 @@ WordleWidget = VBox(
         incorrect_place_box,
         correct_place_label,
         correct_place_box,
-        HBox([button_update,button_clear, button_reset]),
+        HBox([button_update, button_clear, button_reset]),
         HBox([results_output, track_output]),
     ]
 )
