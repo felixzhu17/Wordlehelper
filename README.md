@@ -1,1 +1,1 @@
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/felixzhu17/Wordlehelper/HEAD?urlpath=%2Fvoila%2Frender%2Fwordle.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://hub.gke2.mybinder.org/user/felixzhu17-wordlehelper-bdsqp89z/voila/render/wordle.ipynb?token=B8ZGVzH4TtOFPGxCZzqr1A)
