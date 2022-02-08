@@ -1,4 +1,7 @@
 name: python 3.8.5
 dependencies:
   - python=3.8.5
-  - enchant
+  - enchant2
+  - voila
+  - pyenchant
+  - ipywidgets
