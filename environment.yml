@@ -5,4 +5,4 @@ dependencies:
   - voila
   - pyenchant
   - ipywidgets
-  - aspell
+  - hunspell
