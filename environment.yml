@@ -5,3 +5,4 @@ dependencies:
   - voila
   - pyenchant
   - ipywidgets
+  - myspell-de-us
