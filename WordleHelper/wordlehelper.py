@@ -1,19 +1,20 @@
 import string
-import enchant
 import itertools
+import os
 from IPython.display import display
 from IPython.display import HTML as ipyHTML
 
+
+DICT_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "dictionary.txt"))
 PERMUTATION_CUTOFF = 200000
 
-
 class Wordle:
-    def __init__(self):
+    def __init__(self, dict_path = DICT_PATH):
         self.remaining_letters = list(string.ascii_lowercase)
         self.incorrect_place = []
         self.correct_letters = []
         self.word = [None, None, None, None, None]
-        self.dict = enchant.Dict("en_US")
+        self.dict = self._import_dictionary(dict_path)
 
     @property
     def empty_idx(self):
@@ -113,7 +114,7 @@ class Wordle:
                     test_word[idx] = letter
                 if self.check_base_word(test_word):
                     test_word = "".join(test_word)
-                    if self.dict.check(test_word):
+                    if test_word in self.dict:
                         output.append(test_word)
         return set(output)
 
@@ -153,3 +154,11 @@ class Wordle:
                 return
         else:
             raise ValueError
+
+
+    def _import_dictionary(self, dict_path):
+        dictionary = []
+        with open(dict_path, "r") as f:
+            for line in f:
+                dictionary.append(line.strip())
+        return dictionary
