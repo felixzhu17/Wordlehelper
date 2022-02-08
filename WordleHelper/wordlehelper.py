@@ -77,8 +77,6 @@ class Wordle:
                 if self._check_letter(i):
                     if i.lower() in self.remaining_letters:
                         self.remaining_letters.remove(i.lower())
-            else:
-                return
         return
 
     def update_all_incorrect_places(self, letters):
